@@ -43,4 +43,5 @@ nb-configuration.xml
 /.quarkus/cli/plugins/
 
 # Misc
-src/main/resources/*.pem
+src/main/resources/baseKey.pem
+src/main/resources/privateKey.pem
