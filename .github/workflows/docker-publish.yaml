@@ -24,6 +24,11 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      - name: Create Private Key
+        run: |
+          echo "${{ secrets.PRIVATE_KEY }}" > src/main/resources/privateKey.pem
+          chmod 600 src/main/resources/privateKey.pem
+
       - name: Set up Java
         uses: actions/setup-java@v4
         with:
@@ -80,3 +85,6 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+
+      - name: Remove Private Key
+        run: rm -f src/main/resources/privateKey.pem
