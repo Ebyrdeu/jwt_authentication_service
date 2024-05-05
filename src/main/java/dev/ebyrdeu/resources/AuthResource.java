@@ -16,7 +16,7 @@ public class AuthResource {
     TokenService tokenService;
 
     @POST
-    @Path("/register")
+    @Path("/singup")
     @Transactional
     public void register() {
 
@@ -24,7 +24,7 @@ public class AuthResource {
 
     @GET
     @PermitAll
-    @Path("/login")
+    @Path("/signin")
     @Produces(MediaType.TEXT_PLAIN)
     public String login(@QueryParam("email") String email, @QueryParam("username") String username) {
         return tokenService.generateToken(email, username);
