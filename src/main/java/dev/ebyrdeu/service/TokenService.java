@@ -5,12 +5,15 @@ import jakarta.enterprise.context.RequestScoped;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 import org.eclipse.microprofile.jwt.Claims;
 import org.jose4j.jwt.JwtClaims;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
 
 @RequestScoped
 public class TokenService {
 
+    private static final Logger log = LoggerFactory.getLogger(TokenService.class);
     @ConfigProperty(name = "jwt.expiration.date", defaultValue = "3600")
     Float exp;
 
@@ -24,7 +27,7 @@ public class TokenService {
             jwtClaims.setAudience("regular-user");
             jwtClaims.setExpirationTimeMinutesInTheFuture(exp);
             String token = TokenUtils.generateTokenString(jwtClaims);
-            System.out.println(token);
+            log.info("Generated token: {}", token);
             return token;
         } catch (Exception e) {
             throw new RuntimeException(e);
