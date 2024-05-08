@@ -9,3 +9,4 @@ then
 fi
 
 docker run -dit --rm -p 8080:8080 app/jwt-auth
+

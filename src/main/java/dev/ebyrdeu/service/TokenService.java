@@ -14,6 +14,7 @@ import java.util.UUID;
 public class TokenService {
 
     private static final Logger log = LoggerFactory.getLogger(TokenService.class);
+
     @ConfigProperty(name = "jwt.expiration.date", defaultValue = "3600")
     Float exp;
 
