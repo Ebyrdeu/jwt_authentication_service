@@ -8,4 +8,4 @@ else
     Write-Host "Artifact does not exist. Running Maven package."
     mvn package -Dnative
 }
-docker build -f src/main/docker/Dockerfile.native -t app/jwt-auth .
+docker build -f src/main/docker/Dockerfile -t app/jwt-auth .
