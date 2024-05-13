@@ -2,15 +2,13 @@ package dev.ebyrdeu.domain.entity;
 
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity
 @Table(name = "user", schema = "public")
 public class User extends PanacheEntityBase {
@@ -20,7 +18,7 @@ public class User extends PanacheEntityBase {
     @Column(name = "id")
     public Long id;
 
-    @Column(name = "username")
+    @Column(name = "username", unique = true, nullable = false)
     public String username;
 
     @Column(name = "password")
@@ -28,6 +26,9 @@ public class User extends PanacheEntityBase {
 
     @Column(name = "salt")
     public String salt;
+
+    @Column(name = "ip")
+    public String ip;
 
     @Override
     public boolean equals(Object o) {

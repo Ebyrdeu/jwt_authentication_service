@@ -1,9 +1,8 @@
 package dev.ebyrdeu;
 
 import dev.ebyrdeu.domain.dto.UserDto;
+import dev.ebyrdeu.service.LoginService;
 import dev.ebyrdeu.service.RegisterService;
-import dev.ebyrdeu.service.TokenService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.RequestScoped;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -18,25 +17,26 @@ public class AuthResource {
 
 
     @Inject
-    TokenService tokenService;
+    RegisterService registerService;
 
     @Inject
-    RegisterService registerService;
+    LoginService loginService;
 
     @POST
     @Path("/signup")
+    @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response register(UserDto dto) {
         return registerService.save(dto);
     }
 
+
     @GET
-    @PermitAll
     @Path("/signin")
     @Produces(MediaType.TEXT_PLAIN)
-    public String login(@QueryParam("ip") String ip, @QueryParam("username") String username) {
-        log.info("Attempting to login user {}", username);
-        return tokenService.generateToken(ip, username);
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response login(UserDto dto) {
+        return loginService.signIn(dto);
     }
 
 }

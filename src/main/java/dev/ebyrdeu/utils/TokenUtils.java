@@ -1,6 +1,6 @@
 package dev.ebyrdeu.utils;
 
-import org.jboss.logging.Logger;
+import lombok.extern.slf4j.Slf4j;
 import org.jose4j.jws.AlgorithmIdentifiers;
 import org.jose4j.jws.JsonWebSignature;
 import org.jose4j.jwt.JwtClaims;
@@ -16,8 +16,8 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
 
+@Slf4j
 public class TokenUtils {
-    private static final Logger LOGGER = Logger.getLogger(TokenUtils.class.getName());
 
     private TokenUtils() {
     }
@@ -30,6 +30,7 @@ public class TokenUtils {
      * @throws JoseException if there is an error in creating the JWT.
      */
     public static String generateTokenString(JwtClaims claims) throws JoseException {
+        log.info("Starting token generation using default private key.");
         PrivateKey pk = readPrivateKey("/privateKey.pem");
         return generateTokenString(pk, claims);
     }
@@ -55,7 +56,14 @@ public class TokenUtils {
         jws.setHeader("typ", "JWT");
         jws.setAlgorithmHeaderValue(AlgorithmIdentifiers.RSA_USING_SHA256);
 
-        return jws.getCompactSerialization();
+        try {
+            String token = jws.getCompactSerialization();
+            log.info("Token successfully generated.");
+            return token;
+        } catch (JoseException e) {
+            log.error("Error generating JWT: {}", e.getMessage(), e);
+            throw e;
+        }
     }
 
     /**
@@ -65,7 +73,7 @@ public class TokenUtils {
      */
     private static void logClaims(JwtClaims claims) {
         for (Map.Entry<String, Object> entry : claims.getClaimsMap().entrySet()) {
-            LOGGER.info(String.format("Added claim: %s, value: %s", entry.getKey(), entry.getValue()));
+            log.info("Added claim: {} with value: {}", entry.getKey(), entry.getValue());
         }
     }
 
@@ -77,11 +85,14 @@ public class TokenUtils {
      * @throws JoseException if there is an error reading or decoding the private key.
      */
     public static PrivateKey readPrivateKey(final String pemResName) throws JoseException {
+        log.info("Reading private key from resource: {}", pemResName);
         try (InputStream contentIS = TokenUtils.class.getResourceAsStream(pemResName)) {
             byte[] tmp = new byte[Objects.requireNonNull(contentIS).available()];
             contentIS.read(tmp);
+            log.debug("Private key read successfully.");
             return decodePrivateKey(new String(tmp, StandardCharsets.UTF_8));
         } catch (Exception e) {
+            log.error("Failed to read private key from resource: {}", pemResName, e);
             throw new JoseException("Failed to read private key", e);
         }
     }
@@ -94,12 +105,16 @@ public class TokenUtils {
      * @throws JoseException if decoding the key fails.
      */
     private static PrivateKey decodePrivateKey(final String pemEncoded) throws JoseException {
+        log.info("Decoding private key.");
         try {
             byte[] encodedBytes = toEncodedBytes(pemEncoded);
             PKCS8EncodedKeySpec keySpec = new PKCS8EncodedKeySpec(encodedBytes);
             KeyFactory kf = KeyFactory.getInstance("RSA");
-            return kf.generatePrivate(keySpec);
+            PrivateKey key = kf.generatePrivate(keySpec);
+            log.debug("Private key decoded successfully.");
+            return key;
         } catch (Exception e) {
+            log.error("Error decoding private key: {}", e.getMessage(), e);
             throw new JoseException("Failed to decode private key", e);
         }
     }
@@ -111,6 +126,7 @@ public class TokenUtils {
      * @return a byte array of the decoded key.
      */
     private static byte[] toEncodedBytes(final String pemEncoded) {
+        log.debug("Converting PEM string to byte array.");
         String normalizedPem = pemEncoded
                 .replaceAll("-----BEGIN (.*)-----", "")
                 .replaceAll("-----END (.*)-----", "")
@@ -124,6 +140,8 @@ public class TokenUtils {
      * @return the current time in seconds.
      */
     private static int currentTimeInSecs() {
-        return (int) (System.currentTimeMillis() / 1000);
+        int currentTime = (int) (System.currentTimeMillis() / 1000);
+        log.debug("Current time in seconds: {}", currentTime);
+        return currentTime;
     }
 }

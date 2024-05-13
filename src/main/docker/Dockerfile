@@ -12,8 +12,10 @@
 # Then run the container using:
 #
 # docker run -i --rm -p 8080:8080 quarkus/jwt_authentication_service
-#
 
+#
+# NOTE: THIS IS ONLY FOR IF YOU USE GRAALVM 22
+###
 FROM registry.access.redhat.com/ubi9/ubi-minimal:9.2
 WORKDIR /work/
 RUN chown 1001 /work \

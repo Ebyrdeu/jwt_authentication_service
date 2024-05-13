@@ -1,4 +1,4 @@
-package dev.ebyrdeu.domain.dto;
+package dev.ebyrdeu.domain.hashing;
 
 import io.quarkus.runtime.annotations.RegisterForReflection;
 import lombok.AllArgsConstructor;
@@ -6,13 +6,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-
-@Setter
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @RegisterForReflection
-public class UserDto {
-    private String username;
-    private String password;
+public class VerifyHashRes {
+    private Boolean is_equal;
 }
