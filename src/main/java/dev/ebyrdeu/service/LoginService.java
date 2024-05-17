@@ -39,7 +39,7 @@ public class LoginService {
 
         if (passwordVerification) {
             String jwToken = getJWToken(existingUser);
-            return Response.ok(jwToken).build();
+            return Response.status(200).entity(jwToken).build();
         }
 
         return Response.status(Response.Status.NOT_FOUND).build();

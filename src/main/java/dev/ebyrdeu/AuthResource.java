@@ -31,7 +31,7 @@ public class AuthResource {
     }
 
 
-    @GET
+    @POST
     @Path("/signin")
     @Produces(MediaType.TEXT_PLAIN)
     @Consumes(MediaType.APPLICATION_JSON)
